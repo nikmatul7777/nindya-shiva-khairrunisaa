@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Galeri Foto dengan Audio dan Animasi Love Semua Sisi</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #1a1a1a;
+    color: white;
+  }
+
+  header {
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    font-size: 2em;
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    padding: 20px;
+  }
+
+  .gallery img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255 255 255 / 0.1);
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+
+  .gallery img:hover {
+    transform: scale(1.05);
+  }
+
+  /* Lightbox styles */
+  #lightbox {
+    position: fixed;
+    top: 0; left: 0; right:0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 1000;
+  }
+  #lightbox.active {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  #lightbox img {
+    max-width: 80vw;
+    max-height: 80vh;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(255 0 80 / 0.7);
+    transform: scale(0.8);
+    animation: zoomIn 0.5s forwards;
+  }
+
+  @keyframes zoomIn {
+    to {
+      transform: scale(1);
+    }
+  }
+
+  /* Close button */
+  #lightbox .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 2.5rem;
+    color: white;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  /* Love animation container */
+  #love-container {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1100;
+  }
+
+  .love {
+    position: fixed;
+    font-size: 24px;
+    color: #ff2e63;
+    animation-name: floatLove;
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  @keyframes floatLove {
+    0% {
+      opacity: 1;
+      transform: translate(0, 0) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(var(--x), var(--y)) scale(0.5);
+    }
+  }
+
+  footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    margin-top: 30px;
+  }
+</style>
+</head>
+<body>
+
+<header>📸 Galeri Pacar Tercintaku</header>
+
+<div class="gallery">
+  <img src="1.jpg" alt="Foto 1" data-audio="audio1.mp3" onclick="openLightbox(this)">
+  <img src="2.jpg" alt="Foto 2" data-audio="audio2.mp3" onclick="openLightbox(this)">
+  <img src="3.jpg" alt="Foto 3" data-audio="audio3.mp3" onclick="openLightbox(this)">
+  <img src="4.jpg" alt="Foto 4" data-audio="audio4.mp3" onclick="openLightbox(this)">
+  <img src="5.jpg" alt="Foto 5" data-audio="audio5.mp3" onclick="openLightbox(this)">
+  <img src="6.jpg" alt="Foto 6" data-audio="audio6.mp3" onclick="openLightbox(this)">
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox">
+  <span class="close-btn" onclick="closeLightbox()">&times;</span>
+  <img src="" alt="Foto Besar" id="lightbox-img" />
+</div>
+
+<!-- Container for love animations -->
+<div id="love-container"></div>
+
+<!-- Audio player hidden -->
+<audio id="audio-player" style="display:none;"></audio>
+
+<footer>
+  &copy; 2025 💋💐 Galeri Buatan Akbar Untuk Cewek Tercantik Di Dunia.
+</footer>
+
+<script>
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const audioPlayer = document.getElementById('audio-player');
+  const loveContainer = document.getElementById('love-container');
+
+  function openLightbox(img) {
+    lightbox.classList.add('active');
+    lightboxImg.src = img.src;
+
+    // Mainkan audio
+    const audioSrc = img.dataset.audio;
+    if (audioSrc) {
+      audioPlayer.src = audioSrc;
+      audioPlayer.play();
+    }
+
+    // Jalankan animasi love
+    startLoveAnimation();
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('active');
+    audioPlayer.pause();
+    audioPlayer.currentTime = 0;
+    loveContainer.innerHTML = '';
+  }
+
+  function startLoveAnimation() {
+    loveContainer.innerHTML = '';
+
+    const rect = lightboxImg.getBoundingClientRect();
+
+    for(let i = 0; i < 30; i++) {
+      const love = document.createElement('div');
+      love.classList.add('love');
+      love.textContent = '❤️';
+
+      // Pilih sisi acak: left, right, top, bottom
+      const sides = ['left', 'right', 'top', 'bottom'];
+      const side = sides[Math.floor(Math.random() * sides.length)];
+
+      let startX, startY, moveX, moveY;
+
+      switch(side) {
+        case 'left':
+          startX = rect.left - 30;
+          startY = rect.top + Math.random() * rect.height;
+          moveX = 30 + Math.random() * 30;   // bergerak ke kanan
+          moveY = -80 + Math.random() * 40;  // sedikit naik atau turun
+          break;
+        case 'right':
+          startX = rect.right + 10;
+          startY = rect.top + Math.random() * rect.height;
+          moveX = -30 - Math.random() * 30;  // bergerak ke kiri
+          moveY = -80 + Math.random() * 40;
+          break;
+        case 'top':
+          startX = rect.left + Math.random() * rect.width;
+          startY = rect.top - 30;
+          moveX = -15 + Math.random() * 30;  // gerak ke kiri/kanan acak
+          moveY = 30 + Math.random() * 30;   // bergerak ke bawah
+          break;
+        case 'bottom':
+          startX = rect.left + Math.random() * rect.width;
+          startY = rect.bottom + 10;
+          moveX = -15 + Math.random() * 30;
+          moveY = -30 - Math.random() * 30;  // bergerak ke atas
+          break;
+      }
+
+      love.style.left = `${startX}px`;
+      love.style.top = `${startY}px`;
+
+      love.style.setProperty('--x', `${moveX}px`);
+      love.style.setProperty('--y', `${moveY}px`);
+
+      love.style.animationDuration = (3 + Math.random() * 3) + 's';
+
+      loveContainer.appendChild(love);
+
+      love.addEventListener('animationend', () => {
+        love.remove();
+      });
+    }
+  }
+</script>
+
+</body>
+</html>
